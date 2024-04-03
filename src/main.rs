@@ -46,22 +46,20 @@ impl Item {
     }
 }
 
-fn init() {
-    ITEM_ARRAY.set(Mutex::new(Vec::new()));
-    let mut items = ITEM_ARRAY.get().lock().unwrap();
-    for _ in 0..NUM_ITEMS {
-        let item = Item {
-            x: rand::random::<f64>() * 400.0,
-            y: rand::random::<f64>() * 400.0,
-            vel_x: (rand::random::<f64>() - 0.5) * 50.0,
-            vel_y: (rand::random::<f64>() - 0.5) * 50.0,
-        };
-        items.push(item);
-    }
-}
-
 fn main() {
-    init();
+    ITEM_ARRAY.set(Mutex::new(Vec::new()));
+    {
+        let mut items = ITEM_ARRAY.get().lock().unwrap();
+        for _ in 0..NUM_ITEMS {
+            let item = Item {
+                x: rand::random::<f64>() * 400.0,
+                y: rand::random::<f64>() * 400.0,
+                vel_x: (rand::random::<f64>() - 0.5) * 50.0,
+                vel_y: (rand::random::<f64>() - 0.5) * 50.0,
+            };
+            items.push(item);
+        }
+    } // block to scope out the mutex, which needs to be unlocked for .run()
     nannou::sketch(view).run();
 }
 
