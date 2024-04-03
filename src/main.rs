@@ -68,7 +68,6 @@ fn view(app: &App, frame: Frame) {
     let draw = app.draw();
     let mut items = ITEM_ARRAY.get().lock().unwrap();
 
-    // set background to blue
     draw.background().color(BLACK);
 
     for item in items.iter_mut() {
