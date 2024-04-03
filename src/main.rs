@@ -18,23 +18,28 @@ impl Item {
         self.x += self.vel_x;
         self.y += self.vel_y;
 
-        if self.x < 0.0 || self.x > 400.0 {
+        let (hit_x, hit_y);
+        (self.x, hit_x) = {
             if self.x < 0.0 {
-                self.x *= -1.0;
+                (self.x * -1.0, true)
+            } else if self.x > 400.0 {
+                (800.0 - self.x, true)
             } else {
-                self.x = 800.0 - self.x;
+                (self.x, false)
             }
-            self.vel_x *= -0.9;
-            self.vel_y *= 0.95;
-        }
-        if self.y < 0.0 || self.y > 400.0 {
+        };
+        (self.y, hit_y) = {
             if self.y < 0.0 {
-                self.y *= -1.0;
+                (self.y * -1.0, true)
+            } else if self.y > 400.0 {
+                (800.0 - self.y, true)
             } else {
-                self.y = 800.0 - self.y;
+                (self.y, false)
             }
-            self.vel_y *= -0.9;
-            self.vel_x *= 0.95;
+        };
+        if hit_x || hit_y {
+            self.vel_y *= 0.9 * if hit_y { -1.0 } else { 1.0 };
+            self.vel_x *= 0.95 * if hit_x { -1.0 } else { 1.0 };
         }
 
         self.vel_y -= 0.1;
